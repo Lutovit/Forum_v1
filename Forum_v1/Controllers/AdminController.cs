@@ -6,6 +6,7 @@ using Forum_v1.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forum_v1.Controllers
 {
@@ -13,13 +14,15 @@ namespace Forum_v1.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        ApplicationDbContext db;
         
 
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, DbContextOptions<ApplicationDbContext> options)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            db = new ApplicationDbContext(options);
         }
 
 
@@ -255,6 +258,96 @@ namespace Forum_v1.Controllers
         public ActionResult NoUserEmail()
         {
             return View();
+        }
+
+
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult BanUser()
+        {
+            return View();
+        }
+
+
+
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<ActionResult> BanUser(string Id)
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(Id);
+
+            if (user != null)
+            {
+
+                user.Ban = true;
+                await _userManager.UpdateAsync(user);
+
+                BanEmails banEmail = new BanEmails { Email = user.Email };
+                db.BanEmails.Add(banEmail);
+                await db.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Admin");
+            }
+
+            return RedirectToAction("CantBanUser", new { name = user.Email });
+        }
+
+
+
+        [Authorize(Roles = "admin")]
+        public string CantBanUser(string name)
+        {
+            return "Не могу забанить пользователя:  " + name + "  Что-то пошло не так!";
+        }
+
+
+
+        [Authorize(Roles = "admin")]
+        public string CantCancelBan(string email)
+        {
+            return "Не могу снять бан с пользователя:  " + email + "  Что-то пошло не так!";
+        }
+
+
+
+
+
+        [Authorize(Roles = "admin")]
+        // GET: Admin
+        public async Task<ActionResult> BanUsersList()
+        {
+            return View(await db.BanEmails.ToListAsync());
+        }
+
+
+
+
+        [Authorize(Roles = "admin")]
+        // GET: Admin
+        public async Task<ActionResult> CancelBan(string email)
+        {
+            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                user.Ban = false;
+                await _userManager.UpdateAsync(user);
+            }
+
+
+            BanEmails banEmail = await db.BanEmails.FirstOrDefaultAsync(c => c.Email == email);
+
+            if (banEmail != null)
+            {
+                db.BanEmails.Remove(banEmail);
+                await db.SaveChangesAsync();
+
+                return RedirectToAction("BanUsersList");
+            }
+
+            return RedirectToAction("CantCancelBan");
         }
     }
 }
