@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Repository.Entities;
+using Repository.Absract;
+using Repository.Concrete;
 
 namespace Forum_v1
 {
@@ -34,6 +37,10 @@ namespace Forum_v1
             services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped<IGenericRepository<BanEmail>, EFGenericRepository<BanEmail>>();
+            services.AddScoped<ApplicationDbContext>();
+
         }
 
 

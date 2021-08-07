@@ -7,6 +7,22 @@
     <title>@ViewData["Title"] - Forum_v1</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://use.fontawesome.com/89406ae90f.js"></script>
+
+
+    <style>
+
+        body, html {
+            -webkit-font-smoothing: antialiased;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        i:hover {
+            color: #ff7878;
+        }
+    </style>
+
+
 </head>
 
 
@@ -66,9 +82,27 @@
 
 
 
-    <footer class="border-top footer text-muted">
-        
-    </footer>
+    <div class="container-fluid body-content">
+
+        <div class="container-fluid w-100">
+            @RenderBody()
+        </div>
+
+
+
+        <div class="container-fluid footer" id="footer">          
+
+            <div class="row justify-content-center" style="font-size:1.0em">
+
+                <p> Designed by Lutovit </p>
+
+            </div>
+
+            <hr />
+
+        </div>
+
+    </div>
 
 
 
