@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Repository.Entities;
+using Repository.Absract;
+using Repository.Concrete;
 
 namespace Forum_v1
 {
@@ -18,7 +21,11 @@ namespace Forum_v1
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+               .AddJsonFile("AdminConfig.json", optional: true, reloadOnChange: true)
+              .AddConfiguration(configuration);
+
+            Configuration = builder.Build();                     
         }
 
         public IConfiguration Configuration { get; }
@@ -34,6 +41,15 @@ namespace Forum_v1
             services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped<IGenericRepository<BanEmail>, EFGenericRepository<BanEmail>>();
+
+            services.AddScoped<IGenericRepository<Topic>, EFGenericRepository<Topic>>();
+
+            //services.AddScoped<ApplicationDbContext>();  when not commented unable co create and migrate BD 
+
+            services.Configure<AdminSettings>(Configuration.GetSection(AdminSettings.Settings));
+
         }
 
 
@@ -61,6 +77,7 @@ namespace Forum_v1
 
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {

@@ -6,6 +6,9 @@ using Forum_v1.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Repository.Entities;
 
 namespace Forum_v1.Controllers
 {
@@ -13,13 +16,15 @@ namespace Forum_v1.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly string _adminEmail = "pilot_mig@bk.ru";
+        
+        private readonly AdminSettings _options;
 
 
-        public RoleController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RoleController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<AdminSettings> options)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _options = options.Value;
         }
 
 
@@ -54,7 +59,7 @@ namespace Forum_v1.Controllers
             ApplicationUser user = await _userManager.FindByEmailAsync(User.Identity.Name);
 
 
-            if (user != null && user.Email == _adminEmail)
+            if (user != null && user.Email == _options.adminEmail)
             {
 
                 IdentityRole roleAdmin = await _roleManager.FindByNameAsync("admin");
@@ -81,7 +86,7 @@ namespace Forum_v1.Controllers
             }
             else
             {
-                return RedirectToAction("WrongEmailToBecomeAdmin", "Roles");
+                return RedirectToAction("WrongEmailToBecomeAdmin", "Role");
             }
         }
 

@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Repository.Entities.Topic>
+@using Forum_v1.Controllers
+
+
+<div class="container-fluid">
+
+
+    <div class="row pt-3 pb-3">
+
+        <div class="coll mx-3 my-3">
+            @Html.ActionLink("Новая тема", "CreateTopic", "Topic", routeValues: null, htmlAttributes: new { @class = "btn btn-dark" })
+        </div>
+
+
+
+        <div class="coll mx-3 my-3">
+
+            @using (Html.BeginForm("FindTopicByName", "Topic", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-inline">
+
+                    <div class="form-group">
+
+                        <div class="col-md-10">
+                            @Html.Editor("Topic name", new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter topic name here" } })
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Find" class="btn btn-dark" />
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+
+    <div class="row">
+
+        <div class="col-xs-12 col-md-8 col-lg-4">
+
+            <div class="row">
+                <h5 class="mr-3">№</h5>
+                <h5>@Html.DisplayName("Наименование:")</h5>
+            </div>
+
+        </div>
+
+        <div class="col-xs-12 col-md-8 col-lg-4">
+
+            <h5>@Html.DisplayName("Описание:")</h5>
+
+        </div>
+
+    </div>
+
+
+
+    @{
+        int i = 1;
+
+        foreach (var item in Model)
+        {
+            <div class="row border-top border-dark">
+
+                <div class="col-xs-12 col-md-8 col-lg-4">
+
+                    <div class="row">
+                        <h5 class="mr-3">@i</h5>
+                        @Html.DisplayFor(modelItem => item.TopicName)
+                    </div>
+
+                </div>
+
+
+                <div class="col-xs-12 col-md-8 col-lg-4">
+                    @Html.DisplayFor(modelItem => item.TopicDescription)
+                </div>
+
+
+            </div>
+
+            i++;
+        }
+    }
+
+</div>
+
+
+
+
