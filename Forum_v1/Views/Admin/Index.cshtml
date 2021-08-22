@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Forum_v1.Models.ApplicationUser>
+﻿@model IEnumerable<Repository.Entities.ApplicationUser>
 
 
 <div class="container-fluid">
@@ -88,7 +88,7 @@
                     <div class="row">
                         <h5 class="mr-3">@i</h5>
                         @Html.DisplayFor(modelItem => item.ClientName)
-                        @if (item.Ban == true)
+                        @if (item.isBanned == true)
                         {
                             <p class="px-2"><i class="fa fa-circle" aria-hidden="true" style="color:red"></i></p>
                         }
