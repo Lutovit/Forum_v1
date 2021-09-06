@@ -1,0 +1,33 @@
+<div class="jumbotron py-2">
+  <h1 class="display-4 text-center">User Form</h1>
+</div>
+<div class="row">
+  <app-user-form></app-user-form>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Client Name</th>
+        <th>Company Name</th>
+        <th>Email</th>
+        <th>Date Of Registration</th>
+        <th>is Banned</th>
+        <th>is Delited</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of service.list">
+        <td (click)="populateForm(row)">{{row.clientName}}</td>
+        <td (click)="populateForm(row)">{{row.companyName}}</td>
+        <td (click)="populateForm(row)">{{row.email}}</td>
+        <td (click)="populateForm(row)">{{row.dateOfRegistration}}</td>
+        <td>{{row.isBanned}}</td>
+        <td>{{row.isDelited}}</td>
+
+        <td>
+          <i class="far fa-trash-alt fa-lg text-danger" (click)="onDelete(row.email)"></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

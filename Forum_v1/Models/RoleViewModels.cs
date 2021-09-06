@@ -22,4 +22,5 @@ namespace Forum_v1.Models
         [Required]
         public string Name { get; set; }
     }
+
 }

@@ -1,0 +1,37 @@
+<h1 id="tableLabel">Users of my App</h1>
+
+
+<p *ngIf="!users"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="users">
+
+  <thead>
+
+    <tr>
+     
+      <th>Name</th>
+      <th>Company</th>
+      <th>Email</th>
+      <th>Date of registration</th>
+      <th>isBanned</th>
+      <th>isDelited</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr *ngFor="let user of users">
+     
+      <td>{{ user.clientName }}</td>
+      <td>{{ user.companyName }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.dateOfRegistration }}</td>
+      <td>{{ user.isBanned }}</td>
+      <td>{{ user.isDelited }}</td>
+    </tr>
+
+  </tbody>
+
+</table>
+

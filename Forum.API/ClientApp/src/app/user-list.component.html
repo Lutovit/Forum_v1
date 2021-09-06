@@ -1,0 +1,32 @@
+﻿<div>
+    <a routerLink="/create" class="nav-link btn btn-sm btn-primary">Добавить</a>
+</div>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <td>ClientName</td>
+            <td>CompanyName</td>
+            <td>DateOfRegistration</td>
+            <td>isBanned</td>
+            <td>isDelited</td>
+            <td></td>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let p of users">
+            <td>{{p.clientName}}</td>
+            <td>{{p.companyName}}</td>
+            <td>{{p.cateOfRegistration}}</td>
+            <td>{{p.isBanned}}</td>
+            <td>{{p.isDelited}}</td>
+            <td>
+                <a [routerLink]="['edit', p.id]" class="btn btn-sm btn-primary">Изменить</a>
+                <button (click)="delete(p.id)" class="btn btn-sm btn-danger">Удалить</button>
+            </td>
+        </tr>
+    </tbody>
+
+</table>

@@ -11,6 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Repository.Entities;
+using Repository.Absract;
+using Repository.Concrete;
+using Forum_v1.Services;
 
 namespace Forum_v1
 {
@@ -18,7 +22,11 @@ namespace Forum_v1
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+               .AddJsonFile("AdminConfig.json", optional: true, reloadOnChange: true)
+              .AddConfiguration(configuration);
+
+            Configuration = builder.Build();                     
         }
 
         public IConfiguration Configuration { get; }
@@ -34,6 +42,21 @@ namespace Forum_v1
             services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+            services.AddScoped<IGenericRepository<BanEmail>, EFGenericRepository<BanEmail>>();
+            services.AddScoped<IGenericRepository<Message>, EFGenericRepository<Message>>();
+            services.AddScoped<ITopicRepository, EFTopicRepository>();
+
+
+            //services.AddScoped<ApplicationDbContext>();  when not commented unable co create and migrate BD 
+
+            services.Configure<AdminSettings>(Configuration.GetSection(AdminSettings.Settings));
+
+            services.AddTransient<IAdminConfigService, AdminConfigService>();
+
+            services.AddTransient<AdminConfigService>();
+
         }
 
 
@@ -61,6 +84,7 @@ namespace Forum_v1
 
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
